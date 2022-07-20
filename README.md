@@ -1,2 +1,2 @@
-# lib_template
-Template repository for bootstrap new libraries faster
+# Cloud Pine
+Pino Transport abstraction for Google Cloud Logging.
