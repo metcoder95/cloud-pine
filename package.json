@@ -3,15 +3,18 @@
   "version": "0.0.0",
   "description": "Pino Transport abstraction for Google Cloud Logging.",
   "main": "index.js",
+  "bin": {
+    "cloud-pine": "./cli.js"
+  },
   "types": "index.d.ts",
   "scripts": {
-    "test": "tap --cov test/*.test.js && npm run typescript",
-    "test:ci": "tap --cov test/*.test.js && npm run typescript && npm run lint",
+    "test": "tap --cov test/**/*.test.js && npm run test:ts && npm run lint",
+    "test:ci": "tap --cov test/**/*.test.js && npm run test:ts && npm run lint:ci",
     "test:only": "tap --only",
     "test:unit": "tap test/*.test.js",
+    "test:ts": "tsd",
     "lint": "standard | snazzy",
-    "lint:ci": "standard",
-    "typescript": "tsd"
+    "lint:ci": "standard"
   },
   "keywords": [
     "pino",
