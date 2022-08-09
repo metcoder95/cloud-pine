@@ -94,9 +94,9 @@ tap.test('CloudLogging', root => {
           }
         }
 
-        const labels = Object.assign(
-          { logger: 'pino' },
-          detectedResource.labels
+        const expectedDetectedResource = Object.assign(
+          { type: 'global' },
+          detectedResource
         )
         const { CloudLogging } = t.mock('../../lib/cloud-logging', {
           '@google-cloud/logging': { Logging: LoggingMock }
@@ -107,13 +107,7 @@ tap.test('CloudLogging', root => {
         const instance = new CloudLogging(logName, defaultOptions)
 
         await instance.init()
-        t.same(
-          instance.resource,
-          Object.assign({}, detectedResource, {
-            type: 'global',
-            labels: labels
-          })
-        )
+        t.same(instance.resource, expectedDetectedResource)
       }
     )
 
@@ -157,9 +151,9 @@ tap.test('CloudLogging', root => {
           }
         }
 
-        const labels = Object.assign(
-          { logger: 'pino' },
-          detectedResource.labels
+        const expectedDetectedResource = Object.assign(
+          { type: 'global' },
+          detectedResource
         )
         const { CloudLogging } = t.mock('../../lib/cloud-logging', {
           '@google-cloud/logging': { Logging: LoggingMock }
@@ -170,27 +164,9 @@ tap.test('CloudLogging', root => {
         const instance = new CloudLogging(logName, defaultOptions)
 
         await instance.init()
-        t.same(
-          instance.resource,
-          Object.assign({}, detectedResource, {
-            type: 'global',
-            labels: labels
-          })
-        )
-        t.same(
-          instance.resource,
-          Object.assign({}, detectedResource, {
-            type: 'global',
-            labels: labels
-          })
-        )
-        t.same(
-          instance.resource,
-          Object.assign({}, detectedResource, {
-            type: 'global',
-            labels: labels
-          })
-        )
+        t.same(instance.resource, expectedDetectedResource)
+        t.same(instance.resource, expectedDetectedResource)
+        t.same(instance.resource, expectedDetectedResource)
       }
     )
   })
