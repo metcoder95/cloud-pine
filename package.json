@@ -1,32 +1,46 @@
 {
-  "name": "<lib_name>",
+  "name": "cloud-pine",
   "version": "0.0.0",
-  "description": "<description>",
+  "description": "Pino Transport abstraction for Google Cloud Logging.",
   "main": "index.js",
+  "bin": {
+    "cloud-pine": "./cli.js"
+  },
   "types": "index.d.ts",
   "scripts": {
-    "test": "tap --cov test/*.test.js && npm run typescript",
-    "test:ci": "tap --cov test/*.test.js && npm run typescript && npm run lint",
+    "test": "tap --cov test/**/*.test.js && npm run test:ts && npm run lint",
+    "test:ci": "tap --cov test/**/*.test.js && npm run test:ts && npm run lint:ci",
     "test:only": "tap --only",
     "test:unit": "tap test/*.test.js",
+    "test:ts": "tsd",
     "lint": "standard | snazzy",
-    "lint:ci": "standard",
-    "typescript": "tsd"
+    "lint:ci": "standard"
   },
-  "keywords": [],
+  "keywords": [
+    "pino",
+    "pine",
+    "gcp",
+    "google-cloud",
+    "google-cloud-platform",
+    "cloud",
+    "cloud-pine",
+    "logging",
+    "cloud-logging"
+  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/metcoder95/<lib_name>.git"
+    "url": "git+https://github.com/metcoder95/cloud-pine.git"
   },
-  "readme": "https://github.com/metcoder95/<lib_name>/blob/main/README.md",
+  "readme": "https://github.com/metcoder95/cloud-pine/blob/main/README.md",
   "bugs": {
-    "url": "https://github.com/metcoder95/<lib_name>/issues"
+    "url": "https://github.com/metcoder95/cloud-pine/issues"
   },
   "author": "metcoder95 <me@metcoder.dev>",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^14.17.6",
     "husky": "^7.0.2",
+    "pino": "^8.2.0",
     "snazzy": "^9.0.0",
     "standard": "^16.0.3",
     "tap": "^15.0.10",
@@ -34,6 +48,8 @@
     "typescript": "^4.4"
   },
   "dependencies": {
+    "@google-cloud/logging": "^10.1.1",
+    "split2": "^4.1.0"
   },
   "tsd": {
     "directory": "test"
