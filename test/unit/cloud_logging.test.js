@@ -203,7 +203,8 @@ tap.test('CloudLogging', root => {
             {
               severity: CloudLogging.SEVERITY_MAP[30],
               labels: {
-                logger: 'pino'
+                logger: 'pino',
+                agent: 'cloud_pine'
               }
             },
             { resource: Object.assign({ type: 'global' }, detectedResource) }
@@ -268,7 +269,8 @@ tap.test('CloudLogging', root => {
             {
               severity: CloudLogging.SEVERITY_MAP[50],
               labels: {
-                logger: 'pino'
+                logger: 'pino',
+                agent: 'cloud_pine'
               }
             },
             { resource: Object.assign({ type: 'global' }, detectedResource) }
@@ -333,7 +335,8 @@ tap.test('CloudLogging', root => {
             {
               severity: CloudLogging.SEVERITY_MAP[50],
               labels: {
-                logger: 'pino'
+                logger: 'pino',
+                agent: 'cloud_pine'
               }
             },
             { resource: Object.assign({ type: 'global' }, detectedResource) }
