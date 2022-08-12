@@ -9,10 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    name: Node 16.x
+    name: Release Creation
     steps:
       - uses: actions/checkout@v1
-      - name: Setup node
       - uses: ncipollo/release-action@v1
         with:
           bodyFile: "CHANGELOG.md"
