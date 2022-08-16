@@ -52,7 +52,7 @@ tap.test('CloudLogging#sync', root => {
   })
 
   root.test('#init', nested => {
-    nested.plan(2)
+    nested.plan(3)
 
     nested.test(
       'Should initialize the log instance with resources',
@@ -171,6 +171,68 @@ tap.test('CloudLogging#sync', root => {
         t.same(instance.resource, expectedDetectedResource)
         t.same(instance.resource, expectedDetectedResource)
         t.same(instance.resource, expectedDetectedResource)
+      }
+    )
+
+    nested.test(
+      'Should be skip if skipInit flag is set',
+      async t => {
+        const logName = 'test'
+        const projectId = 'test-project'
+        const detectedResource = {
+          labels: {
+            projectId,
+            instanceId: '12345678901234',
+            zone: 'us-central1-a'
+          }
+        }
+        const defaultOptions = {
+          googleCloudOptions: {
+            projectId,
+            keyFilename: '/path/to/keyfile.json'
+          },
+          sync: true,
+          skipInit: true
+        }
+
+        class LoggingMock extends BaseLoggingMock {
+          constructor (options) {
+            t.same(options, defaultOptions.googleCloudOptions)
+            super()
+          }
+
+          setProjectId () {
+            t.fail('setProjectId should not be called')
+            return Promise.resolve()
+          }
+
+          setDetectedResource () {
+            t.fail('setDetectedResource should not be called')
+            this.detectedResource = detectedResource
+            return Promise.resolve()
+          }
+
+          logSync (name) {
+            t.equal(name, logName)
+            return new BaseLogMock(name)
+          }
+        }
+
+        const expectedDetectedResource = Object.assign(
+          { type: 'global' },
+          detectedResource
+        )
+        const { CloudLogging } = t.mock('../../lib/cloud-logging', {
+          '@google-cloud/logging': { Logging: LoggingMock }
+        })
+
+        t.plan(4)
+
+        const instance = new CloudLogging(logName, defaultOptions)
+
+        await instance.init()
+        t.ok(instance.sync)
+        t.notSame(instance.resource, expectedDetectedResource)
       }
     )
   })
@@ -676,7 +738,7 @@ tap.test('CloudLogging#async', root => {
   })
 
   root.test('#init', nested => {
-    nested.plan(2)
+    nested.plan(3)
 
     nested.test(
       'Should initialize the log instance with resources',
@@ -791,6 +853,67 @@ tap.test('CloudLogging#async', root => {
         t.same(instance.resource, expectedDetectedResource)
         t.same(instance.resource, expectedDetectedResource)
         t.same(instance.resource, expectedDetectedResource)
+      }
+    )
+
+    nested.test(
+      'Should be skip if skipInit flag is set',
+      async t => {
+        const logName = 'test'
+        const projectId = 'test-project'
+        const detectedResource = {
+          labels: {
+            projectId,
+            instanceId: '12345678901234',
+            zone: 'us-central1-a'
+          }
+        }
+        const defaultOptions = {
+          googleCloudOptions: {
+            projectId,
+            keyFilename: '/path/to/keyfile.json'
+          },
+          skipInit: true
+        }
+
+        class LoggingMock extends BaseLoggingMock {
+          constructor (options) {
+            t.same(options, defaultOptions.googleCloudOptions)
+            super()
+          }
+
+          setProjectId () {
+            t.fail('setProjectId should not be called')
+            return Promise.resolve()
+          }
+
+          setDetectedResource () {
+            t.fail('setDetectedResource should not be called')
+            this.detectedResource = detectedResource
+            return Promise.resolve()
+          }
+
+          log (name) {
+            t.equal(name, logName)
+            return new BaseLogMock(name)
+          }
+        }
+
+        const expectedDetectedResource = Object.assign(
+          { type: 'global' },
+          detectedResource
+        )
+        const { CloudLogging } = t.mock('../../lib/cloud-logging', {
+          '@google-cloud/logging': { Logging: LoggingMock }
+        })
+
+        t.plan(4)
+
+        const instance = new CloudLogging(logName, defaultOptions)
+
+        await instance.init()
+        t.notOk(instance.sync)
+        t.notSame(instance.resource, expectedDetectedResource)
       }
     )
   })
