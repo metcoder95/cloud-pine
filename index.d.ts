@@ -2,7 +2,7 @@
 import { Transform } from 'stream';
 import { LoggingOptions, Log, LogSync } from '@google-cloud/logging';
 
-declare function CloudPine(options?: PrettyOptions_): Transform;
+declare function CloudPine(options?: CloudPineOptions): Transform;
 
 type CloudPineOptions = {
   logName?: string;
@@ -15,7 +15,7 @@ type CloudPineOptions = {
     defaultLabels?: Record<string, string>;
     skipInit?: boolean;
     sync?: boolean;
-    logOptions?: ConstructorParameters<Log> | ConstructorParameters<LogSync>;
+    logOptions?: ConstructorParameters<typeof Log> | ConstructorParameters<typeof LogSync>;
   };
 };
 
