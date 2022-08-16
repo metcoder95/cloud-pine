@@ -1,0 +1,21 @@
+  [0m[37m[1m[4mCloud Pine[22m[39m[0m
+
+  [0mForward [32m[1mpino[39m logs to [34m[1m Google Cloud Logging[22m[39m:[0m
+
+     [33mcat log | cloud-pine --projectid someprojectid -l something=else -l service=http[39m
+
+  [34m[1mFlags[22m[39m
+  [0m-h  | --help              Display Help
+  -v  | --version           Display Version
+  -n  | --name              Log Name. Default to [33mCloud_Pine[39m
+  -s  | --sync              Cloud Logging Mode. Sync will print to [33mstdout[39m meanwhile async will
+                            forward logs to Cloud Logging
+  -p  | --projectid         Google Cloud Project ID. Default to automatic detected resource or
+                            [33mGOOGLE_APPLICATION_CREDENTIALS[39m
+  -k  | --key               Path to key file
+  -l  | --labels            Custom labels to be attached to the logging labels. Should be in the format [33mlabel=value[39m.
+                            Can be used one or more times.
+  -r  | --resource          [33mMonitoring Resource[39m type. Default to [33mglobal[39m or Monitored Resource detected.
+  -rs  | --resource-labels   [33mMonitoring Resource#Labels[39m that will be attached to the resource by default. Follows same pattern as [33m--labels[39m.
+  -i  | --skip-init         Skips identification of monitored resource, which will infer things like [33mproject-ide[39m. and [33mMonitored Resource[39m
+                            settings. Default to [33mfalse[39m.

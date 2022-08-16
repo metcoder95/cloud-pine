@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "@google-cloud/logging": "^10.1.1",
+    "minimist": "^1.2.6",
     "split2": "^4.1.0"
   },
   "tsd": {
