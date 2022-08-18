@@ -14,7 +14,8 @@
     "test:unit": "tap test/*.test.js",
     "test:ts": "tsd",
     "lint": "standard | snazzy",
-    "lint:ci": "standard"
+    "lint:ci": "standard",
+    "release": "npx standard-version"
   },
   "keywords": [
     "pino",
