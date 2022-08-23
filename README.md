@@ -1,3 +1,7 @@
+[![CI](https://github.com/metcoder95/cloud-pine/actions/workflows/ci.yml/badge.svg)](https://github.com/metcoder95/cloud-pine/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/metcoder95/cloud-pine/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/metcoder95/cloud-pine/actions/workflows/codeql-analysis.yml)
+![version](https://badge.fury.io/js/cloud-pine.svg)
+
 # Cloud Pine
 
 Pino Transport that abstracts Google Cloud Logging implementation underneath.
@@ -158,6 +162,6 @@ The library can be used in either of two modes, `sync` or `async`.
 
 The default mode for the CLI usage is `sync` meaning that all logs will be directly streamed to `stdout`, meanwhile the default mode for the Transport usage is `async`, where all the logs will be streamed directly to Google Cloud Logging service.
 
->For more information about when to use one or another please take a look at the following documentation: [**Writting to `stdout**](https://cloud.google.com/nodejs/docs/reference/logging/latest#writing-to-stdout).
+>For more information about when to use one or another please take a look at the following documentation: [**Writting to `stdout`**](https://cloud.google.com/nodejs/docs/reference/logging/latest#writing-to-stdout).
 
 
