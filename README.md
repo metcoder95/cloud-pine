@@ -70,6 +70,8 @@ logger.info('hello world')
 logger.error({ oops: 'hello!' }, 'error')
 ```
 
+**NOTE**: The `projectId` string and `resource` object on the Logging instance are detected and set automatically 🎉
+
 **Configuration**
 `Cloud-Pine` supports the following configuration:
 
@@ -111,17 +113,17 @@ Usage: cat log | cloud-pine --projectid someprojectid -l something=else -l servi
 
   -n  | --name              Log Name. Default to Cloud_Pine
 
-  -s  | --sync              Cloud Logging Mode. Sync will print to `stdout` 
+  -s  | --sync              Cloud Logging Mode. Sync will print to `stdout`
                             meanwhile async will forward logs to Cloud Logging.
                             Default to true.
 
-  -p  | --projectid         Google Cloud Project ID. Default to automatic       
-                            detected resource or 
+  -p  | --projectid         Google Cloud Project ID. Default to automatic
+                            detected resource or
                             `GOOGLE_APPLICATION_CREDENTIALS`
 
   -k  | --key               Path to key file
 
-  -l  | --labels            Custom labels to be attached to the logging labels. 
+  -l  | --labels            Custom labels to be attached to the logging labels.
                             Should be in the format `label=value`.
                             Can be used one or more times.
 
@@ -133,7 +135,7 @@ Usage: cat log | cloud-pine --projectid someprojectid -l something=else -l servi
                             Follows same pattern as `--labels`.
 
   -i  | --skip-init         Skips identification of monitored resource, which
-                            will infer things like `project-id` and Monitored 
+                            will infer things like `project-id` and Monitored
                             Resource settings. Default to false.
 ```
 
