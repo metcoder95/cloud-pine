@@ -255,18 +255,22 @@ tap.test('CloudLogging#sync', root => {
       sync: true
     }
 
-    nested.plan(6)
+    nested.plan(7)
 
     nested.test('Should parse a line correctly', async t => {
       let expectedEntry
       const expectedLogEntry = {
         some: 'log',
         being: 'printed',
-        message: 'being printed'
+        message: 'being printed',
+        meta: {
+          trace: 'testTrace-123'
+        }
       }
       class LogMock extends BaseLogMock {
         entry (meta, log) {
           const expectedMeta = Object.assign(
+            expectedLogEntry.meta,
             {
               severity: CloudLogging.SEVERITY_MAP[30],
               labels: {
@@ -277,12 +281,14 @@ tap.test('CloudLogging#sync', root => {
             { resource: Object.assign({ type: 'global' }, detectedResource) }
           )
 
+          const { meta: _meta, ...expectedLog } = expectedLogEntry
+
           t.same(meta, expectedMeta)
-          t.same(log, expectedLogEntry)
+          t.same(log, expectedLog)
 
           return (
             (expectedEntry = Object.assign({}, meta, {
-              jsonPayload: expectedLogEntry,
+              jsonPayload: expectedLog,
               logName: this.name
             })),
             expectedEntry
@@ -328,11 +334,15 @@ tap.test('CloudLogging#sync', root => {
         level: 50,
         some: 'log',
         being: 'printed',
-        message: 'being printed'
+        message: 'being printed',
+        meta: {
+          trace: 'testTrace-123'
+        }
       }
       class LogMock extends BaseLogMock {
         entry (meta, log) {
           const expectedMeta = Object.assign(
+            expectedLogEntry.meta,
             {
               severity: CloudLogging.SEVERITY_MAP[50],
               labels: {
@@ -343,8 +353,10 @@ tap.test('CloudLogging#sync', root => {
             { resource: Object.assign({ type: 'global' }, detectedResource) }
           )
 
+          const { meta: _meta, ...expectedLog } = expectedLogEntry
+
           t.same(meta, expectedMeta)
-          t.same(log, expectedLogEntry)
+          t.same(log, expectedLog)
 
           return (
             (expectedEntry = Object.assign({}, meta, {
@@ -388,17 +400,22 @@ tap.test('CloudLogging#sync', root => {
       instance.parseLine(JSON.stringify(expectedLogEntry))
     })
 
-    nested.test('Should handle msg property', async t => {
+    nested.test('Should delete the msg and meta property', async t => {
       let expectedEntry
       const logEntry = {
         level: 50,
         some: 'log',
         being: 'printed',
-        msg: 'being printed'
+        msg: 'being printed',
+        meta: {
+          trace: 'testTrace-123',
+          spanId: 'testSpan-123'
+        }
       }
       class LogMock extends BaseLogMock {
         entry (meta, log) {
           const expectedMeta = Object.assign(
+            logEntry.meta,
             {
               severity: CloudLogging.SEVERITY_MAP[50],
               labels: {
@@ -413,8 +430,91 @@ tap.test('CloudLogging#sync', root => {
           expectedLogEntry.message = logEntry.msg
           delete expectedLogEntry.msg
 
+          const { meta: _meta, ...expectedLog } = expectedLogEntry
+
+          delete expectedLogEntry.meta
+
           t.same(meta, expectedMeta)
-          t.same(log, expectedLogEntry)
+          t.same(log, expectedLog)
+
+          return (
+            (expectedEntry = Object.assign({}, meta, {
+              jsonPayload: log,
+              logName: this.name
+            })),
+            expectedEntry
+          )
+        }
+
+        write (entry) {
+          t.notOk(entry.jsonPayload.msg)
+          t.notOk(entry.jsonPayload.meta)
+          t.equal(entry.jsonPayload.message, logEntry.msg)
+          t.same(entry, expectedEntry)
+        }
+      }
+
+      class LoggingMock extends BaseLoggingMock {
+        setProjectId () {
+          return Promise.resolve()
+        }
+
+        setDetectedResource () {
+          this.detectedResource = detectedResource
+          return Promise.resolve()
+        }
+
+        logSync (name) {
+          return new LogMock(name)
+        }
+      }
+
+      const { CloudLogging } = t.mock('../../lib/cloud-logging', {
+        '@google-cloud/logging': { Logging: LoggingMock }
+      })
+
+      t.plan(6)
+
+      const instance = new CloudLogging(logName, defaultOptions)
+
+      await instance.init()
+
+      instance.parseLine(JSON.stringify(logEntry))
+    })
+
+    nested.test('Should handle msg property', async t => {
+      let expectedEntry
+      const logEntry = {
+        level: 50,
+        some: 'log',
+        being: 'printed',
+        msg: 'being printed',
+        meta: {
+          trace: 'testTrace-123'
+        }
+      }
+      class LogMock extends BaseLogMock {
+        entry (meta, log) {
+          const expectedMeta = Object.assign(
+            logEntry.meta,
+            {
+              severity: CloudLogging.SEVERITY_MAP[50],
+              labels: {
+                logger: 'pino',
+                agent: 'cloud_pine'
+              }
+            },
+            { resource: Object.assign({ type: 'global' }, detectedResource) }
+          )
+          const expectedLogEntry = Object.assign({ message: '' }, logEntry)
+
+          expectedLogEntry.message = logEntry.msg
+          delete expectedLogEntry.msg
+
+          const { meta: _meta, ...expectedLog } = expectedLogEntry
+
+          t.same(meta, expectedMeta)
+          t.same(log, expectedLog)
 
           return (
             (expectedEntry = Object.assign({}, meta, {
@@ -570,7 +670,10 @@ tap.test('CloudLogging#sync', root => {
       const expectedLogEntry = {
         some: 'log',
         being: 'printed',
-        message: 'being printed'
+        message: 'being printed',
+        meta: {
+          trace: 'testTrace-123'
+        }
       }
       const httpRequestLog = {
         requestMethod: 'POST',
@@ -593,6 +696,7 @@ tap.test('CloudLogging#sync', root => {
       class LogMock extends BaseLogMock {
         entry (meta, log) {
           const expectedMeta = Object.assign(
+            expectedLogEntry.meta,
             {
               httpRequest: httpRequestLog,
               severity: CloudLogging.SEVERITY_MAP[30],
@@ -604,8 +708,10 @@ tap.test('CloudLogging#sync', root => {
             { resource: Object.assign({ type: 'global' }, detectedResource) }
           )
 
+          const { meta: _meta, ...expectedLog } = expectedLogEntry
+
           t.same(meta, expectedMeta)
-          t.same(log, expectedLogEntry)
+          t.same(log, expectedLog)
 
           return (
             (expectedEntry = Object.assign({}, meta, {
@@ -942,11 +1048,15 @@ tap.test('CloudLogging#async', root => {
       const expectedLogEntry = {
         some: 'log',
         being: 'printed',
-        message: 'being printed'
+        message: 'being printed',
+        meta: {
+          trace: 'exampleTrace-123'
+        }
       }
       class LogMock extends BaseLogMock {
         entry (meta, log) {
           const expectedMeta = Object.assign(
+            expectedLogEntry.meta,
             {
               severity: CloudLogging.SEVERITY_MAP[30],
               labels: {
@@ -957,8 +1067,10 @@ tap.test('CloudLogging#async', root => {
             { resource: Object.assign({ type: 'global' }, detectedResource) }
           )
 
+          const { meta: _meta, ...expectedLog } = expectedLogEntry
+
           t.same(meta, expectedMeta)
-          t.same(log, expectedLogEntry)
+          t.same(log, expectedLog)
 
           return (
             (expectedEntry = Object.assign({}, meta, {
@@ -1008,11 +1120,15 @@ tap.test('CloudLogging#async', root => {
         level: 50,
         some: 'log',
         being: 'printed',
-        message: 'being printed'
+        message: 'being printed',
+        meta: {
+          trace: 'testTrace-123'
+        }
       }
       class LogMock extends BaseLogMock {
         entry (meta, log) {
           const expectedMeta = Object.assign(
+            expectedLogEntry.meta,
             {
               severity: CloudLogging.SEVERITY_MAP[50],
               labels: {
@@ -1023,8 +1139,10 @@ tap.test('CloudLogging#async', root => {
             { resource: Object.assign({ type: 'global' }, detectedResource) }
           )
 
+          const { meta: _meta, ...expectedLog } = expectedLogEntry
+
           t.same(meta, expectedMeta)
-          t.same(log, expectedLogEntry)
+          t.same(log, expectedLog)
 
           return (
             (expectedEntry = Object.assign({}, meta, {
@@ -1074,11 +1192,15 @@ tap.test('CloudLogging#async', root => {
         level: 50,
         some: 'log',
         being: 'printed',
-        msg: 'being printed'
+        msg: 'being printed',
+        meta: {
+          trace: 'testTrace-123'
+        }
       }
       class LogMock extends BaseLogMock {
         entry (meta, log) {
           const expectedMeta = Object.assign(
+            logEntry.meta,
             {
               severity: CloudLogging.SEVERITY_MAP[50],
               labels: {
@@ -1093,8 +1215,10 @@ tap.test('CloudLogging#async', root => {
           expectedLogEntry.message = logEntry.msg
           delete expectedLogEntry.msg
 
+          const { meta: _meta, ...expectedLog } = expectedLogEntry
+
           t.same(meta, expectedMeta)
-          t.same(log, expectedLogEntry)
+          t.same(log, expectedLog)
 
           return (
             (expectedEntry = Object.assign({}, meta, {
@@ -1250,7 +1374,10 @@ tap.test('CloudLogging#async', root => {
       const expectedLogEntry = {
         some: 'log',
         being: 'printed',
-        message: 'being printed'
+        message: 'being printed',
+        meta: {
+          trace: 'testTrace-123'
+        }
       }
       const httpRequestLog = {
         requestMethod: 'POST',
@@ -1273,6 +1400,7 @@ tap.test('CloudLogging#async', root => {
       class LogMock extends BaseLogMock {
         entry (meta, log) {
           const expectedMeta = Object.assign(
+            expectedLogEntry.meta,
             {
               httpRequest: httpRequestLog,
               severity: CloudLogging.SEVERITY_MAP[30],
@@ -1284,8 +1412,10 @@ tap.test('CloudLogging#async', root => {
             { resource: Object.assign({ type: 'global' }, detectedResource) }
           )
 
+          const { meta: _meta, ...expectedLog } = expectedLogEntry
+
           t.same(meta, expectedMeta)
-          t.same(log, expectedLogEntry)
+          t.same(log, expectedLog)
 
           return (
             (expectedEntry = Object.assign({}, meta, {
