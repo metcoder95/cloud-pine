@@ -255,7 +255,7 @@ tap.test('CloudLogging#sync', root => {
       sync: true
     }
 
-    nested.plan(8)
+    nested.plan(9)
 
     nested.test('Should parse a line correctly', async t => {
       let expectedEntry
@@ -432,6 +432,73 @@ tap.test('CloudLogging#sync', root => {
           return (
             (expectedEntry = Object.assign({}, meta, {
               jsonPayload: expectedLog,
+              logName: this.name
+            })),
+            expectedEntry
+          )
+        }
+
+        write (entry) {
+          t.same(entry, expectedEntry)
+        }
+      }
+
+      class LoggingMock extends BaseLoggingMock {
+        setProjectId () {
+          return Promise.resolve()
+        }
+
+        setDetectedResource () {
+          this.detectedResource = detectedResource
+          return Promise.resolve()
+        }
+
+        logSync (name) {
+          return new LogMock(name)
+        }
+      }
+
+      const { CloudLogging } = t.mock('../../lib/cloud-logging', {
+        '@google-cloud/logging': { Logging: LoggingMock }
+      })
+
+      t.plan(3)
+
+      const instance = new CloudLogging(logName, defaultOptions)
+
+      await instance.init()
+
+      instance.parseLine(JSON.stringify(expectedLogEntry))
+    })
+
+    nested.test('Should discard non-object meta and parse a line correctly', async t => {
+      let expectedEntry
+      const expectedLogEntry = {
+        some: 'log',
+        being: 'printed',
+        message: 'being printed',
+        meta: false
+      }
+
+      class LogMock extends BaseLogMock {
+        entry (meta, log) {
+          const expectedMeta = Object.assign(
+            {
+              severity: CloudLogging.SEVERITY_MAP[30],
+              labels: {
+                logger: 'pino',
+                agent: 'cloud_pine'
+              }
+            },
+            { resource: Object.assign({ type: 'global' }, detectedResource) }
+          )
+
+          t.same(meta, expectedMeta)
+          t.same(log, expectedLogEntry)
+
+          return (
+            (expectedEntry = Object.assign({}, meta, {
+              jsonPayload: expectedLogEntry,
               logName: this.name
             })),
             expectedEntry
@@ -1112,7 +1179,73 @@ tap.test('CloudLogging#async', root => {
       }
     }
 
-    nested.plan(7)
+    nested.plan(8)
+
+    nested.test('Should discard non-object meta and parse a line correctly', async t => {
+      let expectedEntry
+      const expectedLogEntry = {
+        some: 'log',
+        being: 'printed',
+        message: 'being printed',
+        meta: false
+      }
+      class LogMock extends BaseLogMock {
+        entry (meta, log) {
+          const expectedMeta = Object.assign(
+            {
+              severity: CloudLogging.SEVERITY_MAP[30],
+              labels: {
+                logger: 'pino',
+                agent: 'cloud_pine'
+              }
+            },
+            { resource: Object.assign({ type: 'global' }, detectedResource) }
+          )
+
+          t.same(meta, expectedMeta)
+          t.same(log, expectedLogEntry)
+
+          return (
+            (expectedEntry = Object.assign({}, meta, {
+              jsonPayload: expectedLogEntry,
+              logName: this.name
+            })),
+            expectedEntry
+          )
+        }
+
+        write (entry) {
+          t.same(entry, expectedEntry)
+        }
+      }
+
+      class LoggingMock extends BaseLoggingMock {
+        setProjectId () {
+          return Promise.resolve()
+        }
+
+        setDetectedResource () {
+          this.detectedResource = detectedResource
+          return Promise.resolve()
+        }
+
+        log (name) {
+          return new LogMock(name)
+        }
+      }
+
+      const { CloudLogging } = t.mock('../../lib/cloud-logging', {
+        '@google-cloud/logging': { Logging: LoggingMock }
+      })
+
+      t.plan(3)
+
+      const instance = new CloudLogging(logName, defaultOptions)
+
+      await instance.init()
+
+      instance.parseLine(JSON.stringify(expectedLogEntry))
+    })
 
     nested.test('Should parse a line correctly', async t => {
       let expectedEntry
