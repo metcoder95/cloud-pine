@@ -39,7 +39,7 @@
   "author": "metcoder95 <me@metcoder.dev>",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^18.11.9",
+    "@types/node": "^20.1.0",
     "husky": "^8.0.1",
     "pino": "^8.2.0",
     "snazzy": "^9.0.0",
