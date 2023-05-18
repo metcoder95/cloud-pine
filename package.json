@@ -17,6 +17,9 @@
     "lint:ci": "standard",
     "release": "npx standard-version"
   },
+  "engines": {
+    "node": ">=16.x"
+  },
   "keywords": [
     "pino",
     "pine",
