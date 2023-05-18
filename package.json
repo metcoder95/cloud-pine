@@ -1,6 +1,6 @@
 {
   "name": "cloud-pine",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Pino Transport abstraction for Google Cloud Logging.",
   "main": "index.js",
   "bin": {
