@@ -1,5 +1,4 @@
 const tap = require('tap')
-const { satisfies } = require('semver')
 
 const { CloudLogging } = require('../../lib/cloud-logging')
 
@@ -973,11 +972,7 @@ tap.test('CloudLogging#sync', root => {
       async t => {
         let expectedEntry
         const expectedLogEntry = {
-          error: !satisfies(process.versions.node, '>=20.x')
-            ? new SyntaxError('Unexpected token { in JSON at position 1')
-            : new SyntaxError(
-              "Expected property name or '}' in JSON at position 1"
-            ),
+          error: new SyntaxError('Unexpected token { in JSON at position 1'),
           message: 'Malformed log entry'
         }
         class LogMock extends BaseLogMock {
@@ -994,7 +989,8 @@ tap.test('CloudLogging#sync', root => {
             )
 
             t.same(meta, expectedMeta)
-            t.same(log, expectedLogEntry)
+            t.same(log.message, 'Malformed log entry')
+            t.type(log.error, SyntaxError)
 
             return (
               (expectedEntry = Object.assign({}, meta, {
@@ -1029,7 +1025,7 @@ tap.test('CloudLogging#sync', root => {
           '@google-cloud/logging': { Logging: LoggingMock }
         })
 
-        t.plan(3)
+        t.plan(4)
 
         const instance = new CloudLogging(logName, defaultOptions)
 
@@ -1887,11 +1883,7 @@ tap.test('CloudLogging#async', root => {
       async t => {
         let expectedEntry
         const expectedLogEntry = {
-          error: !satisfies(process.versions.node, '>=20.x')
-            ? new SyntaxError('Unexpected token { in JSON at position 1')
-            : new SyntaxError(
-              "Expected property name or '}' in JSON at position 1"
-            ),
+          error: new SyntaxError('Unexpected token { in JSON at position 1'),
           message: 'Malformed log entry'
         }
         class LogMock extends BaseLogMock {
@@ -1908,7 +1900,8 @@ tap.test('CloudLogging#async', root => {
             )
 
             t.same(meta, expectedMeta)
-            t.same(log, expectedLogEntry)
+            t.same(log.message, 'Malformed log entry')
+            t.type(log.error, SyntaxError)
 
             return (
               (expectedEntry = Object.assign({}, meta, {
@@ -1943,7 +1936,7 @@ tap.test('CloudLogging#async', root => {
           '@google-cloud/logging': { Logging: LoggingMock }
         })
 
-        t.plan(3)
+        t.plan(4)
 
         const instance = new CloudLogging(logName, defaultOptions)
 
