@@ -1888,7 +1888,7 @@ tap.test('CloudLogging#async', root => {
         let expectedEntry
         const expectedLogEntry = {
           error: !satisfies(process.versions.node, '>=20.x')
-            ? new SyntaxError("Expected property name or '}' in JSON at position 1")
+            ? new SyntaxError('Unexpected token { in JSON at position 1')
             : new SyntaxError(
               "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
             ),
