@@ -44,7 +44,7 @@
   "devDependencies": {
     "@types/node": "^20.1.0",
     "husky": "^8.0.1",
-    "pino": "^8.2.0",
+    "pino": "^9.0.0",
     "semver": "^7.5.1",
     "snazzy": "^9.0.0",
     "standard": "^17.0.0",
