@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/metcoder95/cloud-pine/compare/v2.0.1...v3.0.0) (2025-07-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop support for node v18 (#77)
+
+### Features
+
+* drop support for node v18 ([#77](https://github.com/metcoder95/cloud-pine/issues/77)) ([9404713](https://github.com/metcoder95/cloud-pine/commit/9404713988626a339b51528c4f24946420fab9d6))
+
 ### [2.0.1](https://github.com/metcoder95/cloud-pine/compare/v2.0.0...v2.0.1) (2024-01-26)
 
 ## [2.0.0](https://github.com/metcoder95/cloud-pine/compare/v1.0.0...v2.0.0) (2023-05-18)
